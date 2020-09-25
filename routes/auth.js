@@ -64,12 +64,9 @@ router.post('/token', (req,res,next) =>{
     }
     
     const transporter = nodemailer.createTransport({
-        sendmail: true,
-        newline: 'unix',
-        path: '/usr/sbin/sendmail',
         host: process.env.SMTP_HOST,
         port: 587,
-        secure: true,
+        secure: false,
         auth: {
             user: process.env.SMTP_USER,
             pass: process.env.SMTP_PASS

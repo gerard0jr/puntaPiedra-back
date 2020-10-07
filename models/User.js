@@ -21,7 +21,9 @@ let userSchema = new Schema(
             default: '/node-assets/default-picture.png'
         },
         userType: {
-            enum: ['buyer', 'seller', 'agent', 'provider']
+            type: String,
+            enum: ['buyer', 'seller', 'agent', 'provider'],
+            default: 'buyer'
         },
         name: String,
         lastName: String,

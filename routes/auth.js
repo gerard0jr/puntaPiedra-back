@@ -121,18 +121,6 @@ router.post('/checkCode', (req,res) => {
     .catch(err => res.status(500).json(err))
 })
 
-router.post('/checkPasswordCode', (req,res) => {
-  const { body } = req
-  User.findOne({email: body.email})
-    .then(user => {
-      if(!user) return res.status(404).json('User not found')
-      if(Date.now() > user.resetPasswordExpires || !user.resetPasswordExpires) return res.status(400).json('Token expired or missing')
-      if(parseInt(body.code) === user.resetPasswordToken) return res.status(200).json('Código correcto')
-      return res.status(404).json('Código incorrecto')
-    })
-    .catch(err => res.status(500).json(err))
-})
-
 router.post('/changePassword', (req,res) => {
   const { body } = req
   User.findOne({email: body.email})

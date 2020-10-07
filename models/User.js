@@ -3,10 +3,6 @@ let plm = require('passport-local-mongoose')
 
 let userSchema = new Schema(
     {
-        name: String,
-        middleName: String,
-        lastName: String,
-        mothersLastName: String,
         email: {
             type: String,
             unique: true,
@@ -23,6 +19,23 @@ let userSchema = new Schema(
         profilePicture: {
             type: String,
             default: '/node-assets/default-picture.png'
+        },
+        userType: {
+            enum: ['buyer', 'seller', 'agent', 'provider']
+        },
+        name: String,
+        lastName: String,
+        secondLastName: String,
+        company: String,
+        phone: String,
+        beneficiaryName: String,
+        beneficiaryLastName: String,
+        beneficiarySecondLastName: String,
+        beneficiaryEmail: String,
+        beneficiaryPhone: String,
+        agent: {
+            type: Schema.Types.ObjectId,
+            ref: 'User'
         },
         resetPasswordToken: Number,
         resetPasswordExpires: Number

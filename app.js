@@ -50,8 +50,10 @@ app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')))
 app.locals.title = 'Punta Piedra APP'
 
 let auth = require('./routes/auth')
+let data = require('./routes/data')
 
 app.use('/auth', auth)
+app.use('/data', data)
 app.get('*', (_, res) => res.sendFile(path.join(__dirname, 'public', 'index.html')))
 
 module.exports = app;

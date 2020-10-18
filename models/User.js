@@ -39,6 +39,10 @@ let userSchema = new Schema(
             type: Schema.Types.ObjectId,
             ref: 'User'
         },
+        allowNewsletter: {
+            type: Boolean,
+            default: false
+        },
         resetPasswordToken: Number,
         resetPasswordExpires: Number
     },

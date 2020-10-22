@@ -35,6 +35,11 @@ let userSchema = new Schema(
         beneficiarySecondLastName: String,
         beneficiaryEmail: String,
         beneficiaryPhone: String,
+        country: String,
+        state: String,
+        birthDate: Date,
+        lotNumber: String,
+        lotModel: String, 
         agent: {
             type: Schema.Types.ObjectId,
             ref: 'User'

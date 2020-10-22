@@ -17,7 +17,8 @@ router.post('/signup', (req,res,next) => {
             userInfo: {
               name: user.name,
               verified: user.verified,
-              profilePicture: user.profilePicture
+              profilePicture: user.profilePicture,
+              userType: user.userType
             }
         })
     })
@@ -39,7 +40,8 @@ router.post('/login', (req,res,next) =>{
         userInfo: {
           name: user.name,
           verified: user.verified,
-          profilePicture: user.profilePicture
+          profilePicture: user.profilePicture,
+          userType: user.userType
         }
       })
     })
@@ -142,9 +144,9 @@ router.get('/logout', (req,res,next) => {
   return res.status(200).json({message: 'Succesfully logged out'})
 })
 
-router.post('/updateUser/:id', (req,res,next) => {
-  const { id } = req.params
-  User.findByIdAndUpdate(id, {$set:req.body}, {new: true})
+router.post('/updateUser', (req,res,next) => {
+  const { _id } = req.body
+  User.findByIdAndUpdate(_id, {$set:req.body}, {new: true})
   .then(user => res.status(201).json(user))
   .catch(err => res.status(500).json(err))
 })

@@ -40,6 +40,7 @@ let userSchema = new Schema(
         birthDate: Date,
         lotNumber: String,
         lotModel: String, 
+        economicProfile: String,
         agent: {
             type: Schema.Types.ObjectId,
             ref: 'User'

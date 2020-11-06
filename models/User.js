@@ -30,17 +30,20 @@ let userSchema = new Schema(
         secondLastName: String,
         company: String,
         phone: String,
-        beneficiaryName: String,
-        beneficiaryLastName: String,
-        beneficiarySecondLastName: String,
-        beneficiaryEmail: String,
-        beneficiaryPhone: String,
+        language: String,
         country: String,
         state: String,
         birthDate: Date,
-        lotNumber: String,
-        lotModel: String, 
+        lotId: Number,
+        block: Number, 
+        additionalLotId: Number,
+        additionalBlock: Number, 
         economicProfile: String,
+        wantFinance: Boolean,
+        step: {
+            type: Number,
+            default: 0
+        },
         agent: {
             type: Schema.Types.ObjectId,
             ref: 'User'

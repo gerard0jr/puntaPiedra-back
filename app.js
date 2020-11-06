@@ -52,10 +52,12 @@ app.locals.title = 'Punta Piedra APP'
 let auth = require('./routes/auth')
 let data = require('./routes/data')
 let admin = require('./routes/admin')
+let consults = require('./routes/consults')
 
 app.use('/auth', auth)
 app.use('/data', data)
 app.use('/admin', admin)
+app.use('/consults', consults)
 app.get('*', (_, res) => res.sendFile(path.join(__dirname, 'public', 'index.html')))
 
 module.exports = app;

@@ -18,7 +18,9 @@ router.post('/signup', (req,res,next) => {
               name: user.name,
               verified: user.verified,
               profilePicture: user.profilePicture,
-              userType: user.userType
+              userType: user.userType,
+              language: user.language,
+              email: user.email
             }
         })
     })
@@ -41,7 +43,9 @@ router.post('/login', (req,res,next) =>{
           name: user.name,
           verified: user.verified,
           profilePicture: user.profilePicture,
-          userType: user.userType
+          userType: user.userType,
+          language: user.language,
+          email: user.email
         }
       })
     })

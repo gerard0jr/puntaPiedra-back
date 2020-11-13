@@ -110,4 +110,24 @@ router.post('/getHouse', (req,res,next) => {
     } else res.status(404).json({message: 'No hay token'})
 })
 
+router.get('/getUsers', (_,res) => {
+    User.find()
+        .then(users => res.status(200).json(users))
+        .catch(err => res.status(404).json(err))
+})
+
+router.post('/getClientData', (req,res) => {
+    const { selectedUser } = req.body
+    User.findById(selectedUser)
+        .then(user => res.status(200).json(user))
+        .catch(err => res.status(500).json(err))
+})
+
+router.post('/updateClient', (req,res,next) => {
+    const { id, data } = req.body
+    User.findByIdAndUpdate(id, {$set:data}, {new: true})
+    .then(user => res.status(201).json(user))
+    .catch(err => res.status(500).json(err))
+  })
+
 module.exports = router

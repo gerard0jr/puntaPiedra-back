@@ -60,10 +60,14 @@ let userSchema = new Schema(
             type: Number,
             default: 0
         },
-        agent: {
+        customerAgent: {
             type: Schema.Types.ObjectId,
             ref: 'User'
         },
+        clients: [{
+            type: Schema.Types.ObjectId,
+            ref: 'User'
+        }],
         allowNewsletter: {
             type: Boolean,
             default: false

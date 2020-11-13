@@ -14,19 +14,59 @@ router.post('/signup', (req,res,next) => {
         let payload = {
             id: user._id
         }
-        let token = jwt.sign(payload, process.env.JWT, {expiresIn: 1000*60*60*24})  
-        res.status(201).json({
-            message: 'Logged in', 
-            token, 
-            userInfo: {
-              name: user.name,
-              verified: user.verified,
-              profilePicture: user.profilePicture,
-              userType: user.userType,
-              language: user.language,
-              email: user.email
-            }
-        })
+        let token = jwt.sign(payload, process.env.JWT, {expiresIn: 1000*60*60*24})
+        // EMAIL
+        const client = new SocketLabsClient(parseInt(serverId), injectionApiKey)
+        let fromEmail = new EmailAddress("sistema@puntapiedra.com", { friendlyName: "Punta Piedra" })
+
+        const message = {
+          to: req.body.email,
+          from: fromEmail,
+          subject: "Villas de Punta Piedra",
+          htmlBody: `
+          <html>
+              <body>
+              <div style="background-color: #FFFFFF; text-align: center; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;">
+                  <div style="padding: 1rem 2rem;max-width: 500px;margin: 0 auto;background-color: #F6F6F6;">
+                      <h2>Welcome to your Punta Piedra's account</h2>
+                      <h2 style="color: #BABABA">Bienvenido tu cuenta en Punta Piedra</h2>
+                      <p class="mail-title">What's next?</p>
+                      <p style="color: #BABABA" class="mail-title">¿Qué sigue?</p>
+                      <p>Login into your account and start managing your profile</p>
+                      <p style="color: #BABABA">inicia sesión en tu cuenta y empeza a configurar tu perfil</p>
+                      <p><a style='text-decoration: none;' href="https://app.puntapiedra.com">app.puntapiedra.com</a></p>
+                  </div>
+              </div>
+              </body>
+          </html>
+          `,
+          messageType: 'basic'
+        }
+
+        client.send(message)
+          .then(success => {
+            console.log(success)
+            User.findOneAndUpdate({email: req.body.email}, user)
+              .then(user => res.status(201).json({
+                message: 'Logged in', 
+                token, 
+                userInfo: {
+                  _id: user._id,
+                  name: user.name,
+                  verified: user.verified,
+                  profilePicture: user.profilePicture,
+                  userType: user.userType,
+                  language: user.language,
+                  email: user.email,
+                  customerAgent: user.customerAgent
+                }
+              }))
+              .catch(err => res.status(500).json(err))
+          })
+          .catch(err => {
+            console.log(err)
+            res.status(500).json(err)
+          })
     })
     .catch(err => res.status(500).json(err))
 })
@@ -79,7 +119,7 @@ router.post('/token', (req,res,next) =>{
     const message = {
       to: req.body.email,
       from: fromEmail,
-      subject: "¡Te damos la bienvenida a Ataho Analytics!",
+      subject: "Villas de Punta Piedra",
       htmlBody: `
       <html>
           <body>
@@ -160,6 +200,13 @@ router.post('/updateUser', (req,res,next) => {
   User.findByIdAndUpdate(_id, {$set:req.body}, {new: true})
   .then(user => res.status(201).json(user))
   .catch(err => res.status(500).json(err))
+})
+
+router.post('/linkAgent', (req,res) => {
+  const { agentId, userId } = req.body
+    User.findByIdAndUpdate(agentId, {$push: {clients: userId}})
+      .then(agent => res.status(200).json(agent))
+      .catch(err => res.status(501).json(err))
 })
 
 module.exports = router

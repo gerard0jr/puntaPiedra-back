@@ -11,7 +11,8 @@ router.get('/getAgents', (_,res) => {
             ).map(agent => ({ 
                 _id: agent._id, 
                 name: agent.name, 
-                lastName: agent.lastName
+                lastName: agent.lastName,
+                email: agent.email
             }))
             res.status(200).json(agents)
         })

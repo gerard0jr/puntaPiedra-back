@@ -10,12 +10,13 @@ router.post('/send', (req,res) => {
     const client = new SocketLabsClient(parseInt(serverId), injectionApiKey)
     let fromEmail = new EmailAddress("sistema@puntapiedra.com", { friendlyName: "Punta Piedra" })
     let message = {}
-    User.findOne({email})
+    User.findOne({email}).populate('customerAgent')
         .then(user => {
+            let { customerAgent } = user
             switch(data){
-                case ('passport' || 'driversLicence' || 'addressProof'):
+                case 'passport':
                     message = {
-                        to: 'sistema@puntapiedra.com',
+                        to: customerAgent.email,
                         from: fromEmail,
                         subject: `Your client ${user.name} ${user.lastName} has uploaded a document`,
                         htmlBody: `
@@ -24,19 +25,135 @@ router.post('/send', (req,res) => {
                             <div style="background-color: #FFFFFF; text-align: center; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;">
                                 <div style="padding: 1rem 2rem;max-width: 500px;margin: 0 auto;background-color: #F6F6F6;">
                                     <h2>Punta Piedra</h2>
-                                    <p class="mail-title">${user.name} ${user.lastName} uploaded a file: ${
-                                        data === 'passport' ? 'Passport' :
-                                        data === 'driversLicence' ? 'Drivers Licence' :
-                                        data === 'addressProof' ? 'Proof of address' : 
-                                        ''
-                                    }</p>
-                                    <p style="color: #BABABA" class="mail-title">${user.name} ${user.lastName} subió un archivo: ${
-                                        data === 'passport' ? 'Pasaporte' :
-                                        data === 'driversLicence' ? 'Licencia de manejo' :
-                                        data === 'addressProof' ? 'Comprobante de domicilio' : 
-                                        ''
-                                    }</p>
+                                    <p class="mail-title">${user.name} ${user.lastName} uploaded a file: Passport</p>
+                                    <p style="color: #BABABA" class="mail-title">${user.name} ${user.lastName} subió un archivo: Pasaporte</p>
                                     <p>Review document:</p>
+                                    <p><a style='text-decoration: none;' href="https://app.puntapiedra.com">app.puntapiedra.com</a></p>
+                                </div>
+                            </div>
+                            </body>
+                        </html>
+                        `,
+                        messageType: 'basic'
+                    }
+                    client.send(message)
+                        .then(success => {
+                            console.log(success)
+                            res.status(200).json({message: 'message sent'})
+                        })
+                        .catch(err => {
+                            console.log(err)
+                            res.status(501).json(err)
+                        })
+                    break
+                case'driversLicence':
+                    message = {
+                        to: customerAgent.email,
+                        from: fromEmail,
+                        subject: `Your client ${user.name} ${user.lastName} has uploaded a document`,
+                        htmlBody: `
+                        <html>
+                            <body>
+                            <div style="background-color: #FFFFFF; text-align: center; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;">
+                                <div style="padding: 1rem 2rem;max-width: 500px;margin: 0 auto;background-color: #F6F6F6;">
+                                    <h2>Punta Piedra</h2>
+                                    <p class="mail-title">${user.name} ${user.lastName} uploaded a file: Drivers Licence</p>
+                                    <p style="color: #BABABA" class="mail-title">${user.name} ${user.lastName} subió un archivo: Licencia de manejo</p>
+                                    <p>Review document:</p>
+                                    <p><a style='text-decoration: none;' href="https://app.puntapiedra.com">app.puntapiedra.com</a></p>
+                                </div>
+                            </div>
+                            </body>
+                        </html>
+                        `,
+                        messageType: 'basic'
+                    }
+                    client.send(message)
+                        .then(success => {
+                            console.log(success)
+                            res.status(200).json({message: 'message sent'})
+                        })
+                        .catch(err => {
+                            console.log(err)
+                            res.status(501).json(err)
+                        })
+                    break
+                case 'addressProof':
+                    message = {
+                        to: customerAgent.email,
+                        from: fromEmail,
+                        subject: `Your client ${user.name} ${user.lastName} has uploaded a document`,
+                        htmlBody: `
+                        <html>
+                            <body>
+                            <div style="background-color: #FFFFFF; text-align: center; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;">
+                                <div style="padding: 1rem 2rem;max-width: 500px;margin: 0 auto;background-color: #F6F6F6;">
+                                    <h2>Punta Piedra</h2>
+                                    <p class="mail-title">${user.name} ${user.lastName} uploaded a file: Proof of address</p>
+                                    <p style="color: #BABABA" class="mail-title">${user.name} ${user.lastName} subió un archivo: Comprobante de domicilio</p>
+                                    <p>Review document:</p>
+                                    <p><a style='text-decoration: none;' href="https://app.puntapiedra.com">app.puntapiedra.com</a></p>
+                                </div>
+                            </div>
+                            </body>
+                        </html>
+                        `,
+                        messageType: 'basic'
+                    }
+                    client.send(message)
+                        .then(success => {
+                            console.log(success)
+                            res.status(200).json({message: 'message sent'})
+                        })
+                        .catch(err => {
+                            console.log(err)
+                            res.status(501).json(err)
+                        })
+                    break
+                case 'approvedSPA':
+                    message = {
+                        to: email,
+                        from: fromEmail,
+                        subject: `Financiamiento aprobado`,
+                        htmlBody: `
+                        <html>
+                            <body>
+                            <div style="background-color: #FFFFFF; text-align: center; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;">
+                                <div style="padding: 1rem 2rem;max-width: 500px;margin: 0 auto;background-color: #F6F6F6;">
+                                    <h2>Punta Piedra</h2>
+                                    <p class="mail-title">¡${user.name} ${user.lastName}, tu financiamiento ha sido aprobado!</p>
+                                    <p>Inicia sesión para continuar con tu compra:</p>
+                                    <p><a style='text-decoration: none;' href="https://app.puntapiedra.com">app.puntapiedra.com</a></p>
+                                </div>
+                            </div>
+                            </body>
+                        </html>
+                        `,
+                        messageType: 'basic'
+                    }
+                    client.send(message)
+                        .then(success => {
+                            console.log(success)
+                            res.status(200).json({message: 'message sent'})
+                        })
+                        .catch(err => {
+                            console.log(err)
+                            res.status(501).json(err)
+                        })
+                    break
+                case 'approved':
+                    message = {
+                        to: email,
+                        from: fromEmail,
+                        subject: `Financement approved`,
+                        htmlBody: `
+                        <html>
+                            <body>
+                            <div style="background-color: #FFFFFF; text-align: center; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;">
+                                <div style="padding: 1rem 2rem;max-width: 500px;margin: 0 auto;background-color: #F6F6F6;">
+                                    <h2>Punta Piedra</h2>
+                                    <p class="mail-title">${user.name} ${user.lastName}, your financement has been approved!</p>
+                                    <p>Login to continue your purchase:</p>
                                     <p><a style='text-decoration: none;' href="https://app.puntapiedra.com">app.puntapiedra.com</a></p>
                                 </div>
                             </div>
@@ -57,7 +174,7 @@ router.post('/send', (req,res) => {
                     break
                 case 'intDesign':
                     message = {
-                        to: 'sistema@puntapiedra.com',
+                        to: customerAgent.email,
                         from: fromEmail,
                         subject: `Your client ${user.name} ${user.lastName} has chosen the finishes`,
                         htmlBody: `
@@ -89,7 +206,7 @@ router.post('/send', (req,res) => {
                     break
                 case 'document':
                     message = {
-                        to: 'sistema@puntapiedra.com',
+                        to: customerAgent.email,
                         from: fromEmail,
                         subject: `Your client ${user.name} ${user.lastName} has uploaded a document`,
                         htmlBody: `
@@ -121,7 +238,7 @@ router.post('/send', (req,res) => {
                     break
                 case 'finishProfile':
                     message = {
-                        to: 'sistema@puntapiedra.com',
+                        to: customerAgent.email,
                         from: fromEmail,
                         subject: `Your client ${user.name} ${user.lastName} has finished his/her profile`,
                         htmlBody: `
@@ -130,8 +247,8 @@ router.post('/send', (req,res) => {
                             <div style="background-color: #FFFFFF; text-align: center; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;">
                                 <div style="padding: 1rem 2rem;max-width: 500px;margin: 0 auto;background-color: #F6F6F6;">
                                     <h2>Punta Piedra</h2>
-                                    <p class="mail-title">${user.name} ${user.lastName} finished his/her profile successfully</p>
-                                    <p style="color: #BABABA" class="mail-title">${user.name} ${user.lastName} ha completado su perfil satisfactoriamente</p>
+                                    <p class="mail-title">${user.name} ${user.lastName} finished his/her profile successfully and has uploaded all documents</p>
+                                    <p style="color: #BABABA" class="mail-title">${user.name} ${user.lastName} ha completado su perfil y subió sus documentos satisfactoriamente</p>
                                     <p>Review user:</p>
                                     <p><a style='text-decoration: none;' href="https://app.puntapiedra.com">app.puntapiedra.com</a></p>
                                 </div>
@@ -153,7 +270,7 @@ router.post('/send', (req,res) => {
                     break
                 case 'buyHouse':
                     message = {
-                        to: 'sistema@puntapiedra.com',
+                        to: customerAgent.email,
                         from: fromEmail,
                         subject: `Your client ${user.name} ${user.lastName} approved the purchase of a villa`,
                         htmlBody: `
@@ -185,7 +302,7 @@ router.post('/send', (req,res) => {
                     break
                 case 'chooseHouse':
                     message = {
-                        to: 'sistema@puntapiedra.com',
+                        to: customerAgent.email,
                         from: fromEmail,
                         subject: `Your client ${user.name} ${user.lastName} chose a house`,
                         htmlBody: `
@@ -217,7 +334,7 @@ router.post('/send', (req,res) => {
                     break
                 case 'profile':
                     message = {
-                        to: 'sistema@puntapiedra.com',
+                        to: customerAgent.email,
                         from: fromEmail,
                         subject: `Your client ${user.name} ${user.lastName} finished a step`,
                         htmlBody: `
@@ -249,7 +366,7 @@ router.post('/send', (req,res) => {
                     break
                 case 'financeForm':
                     message = {
-                        to: 'sistema@puntapiedra.com',
+                        to: customerAgent.email,
                         from: fromEmail,
                         subject: `${user.name} ${user.lastName} uploaded a financial form`,
                         htmlBody: `

@@ -1,5 +1,4 @@
 require('dotenv').config()
-
 let bodyParser = require('body-parser')
 let cookieParser = require('cookie-parser');
 let express = require('express');
@@ -53,11 +52,13 @@ let auth = require('./routes/auth')
 let data = require('./routes/data')
 let admin = require('./routes/admin')
 let consults = require('./routes/consults')
+let notifications = require('./routes/notifications')
 
 app.use('/auth', auth)
 app.use('/data', data)
 app.use('/admin', admin)
 app.use('/consults', consults)
+app.use('/notifications', notifications)
 app.get('*', (_, res) => res.sendFile(path.join(__dirname, 'public', 'index.html')))
 
 module.exports = app;

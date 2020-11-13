@@ -22,13 +22,12 @@ let userSchema = new Schema(
         },
         userType: {
             type: String,
-            enum: ['buyer', 'seller', 'agent', 'provider'],
+            enum: ['buyer', 'agent', 'provider', 'admin'],
             default: 'buyer'
         },
         name: String,
         lastName: String,
         secondLastName: String,
-        company: String,
         phone: String,
         language: String,
         country: String,
@@ -40,6 +39,23 @@ let userSchema = new Schema(
         additionalBlock: Number, 
         economicProfile: String,
         wantFinance: Boolean,
+        files: Object,
+        villaApproved: Boolean,
+        priceApproved: Boolean,
+        ssn: String,
+        civilStatus: String,
+        occupation: String,
+        company: String,
+        position: String,
+        officePhone: String,
+        kitchenCabinet: String,
+        closetCabinet: String,
+        floor: String,
+        showerTile: String,
+        creditRequest: {
+            type: Object,
+            default: {}
+        },
         step: {
             type: Number,
             default: 0

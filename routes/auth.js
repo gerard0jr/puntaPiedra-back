@@ -1,7 +1,11 @@
 const router = require('express').Router()
 const User = require('../models/User')
 const passport = require('passport')
-const nodemailer = require('nodemailer')
+const { SocketLabsClient, EmailAddress } = require('@socketlabs/email')
+
+const serverId = process.env.SOCKET_SERV_ID
+const injectionApiKey = process.env.SOCKET_KEY
+
 let jwt = require('jsonwebtoken')
 
 router.post('/signup', (req,res,next) => {
@@ -69,41 +73,44 @@ router.post('/token', (req,res,next) =>{
       expires = user.resetPasswordExpires
     }
     
-    const transporter = nodemailer.createTransport({
-        host: process.env.SMTP_HOST,
-        port: 587,
-        secure: false,
-        auth: {
-            user: process.env.SMTP_USER,
-            pass: process.env.SMTP_PASS
-        },
-        tls:{
-            rejectUnauthorized:false  // if on local
-        }
-    })
+    const client = new SocketLabsClient(parseInt(serverId), injectionApiKey)
+    let fromEmail = new EmailAddress("sistema@puntapiedra.com", { friendlyName: "Punta Piedra" })
 
-    const mailOptions = {
-      from: 'app@puntapiedra.com',
-      to: body.email,
-      subject: 'Código para tu cuenta de Punta Piedra',
-      html : `
-        <div>
-            <p>Hola ${user.name},</p>
-            <p>Tu código es: <b>${token}</b> (Válido por 2 horas)</p>
-            <p>Si tienes algún problema, manda un correo a <a href="mailto:contacto@puntapiedra.com">contacto@puntapiedra.com</a></p>
-            <p style="font-size: 12px; margin: 2rem 0;">No responder a este correo</p>
-            <img width="150px" height="auto" src="https://app.puntapiedra.com/logo.png" alt="Punta Piedra Logo">
-        </div>
-      `
+    const message = {
+      to: req.body.email,
+      from: fromEmail,
+      subject: "¡Te damos la bienvenida a Ataho Analytics!",
+      htmlBody: `
+      <html>
+          <body>
+          <div style="background-color: #FFFFFF; text-align: center; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;">
+              <div style="padding: 1rem 2rem;max-width: 500px;margin: 0 auto;background-color: #F6F6F6;">
+                  <h2>Access code for your Punta Piedra's account</h2>
+                  <h2 style="color: #BABABA">Código de acceso para tu cuenta en Punta Piedra</h2>
+                  <p class="mail-title">What's next?</p>
+                  <p style="color: #BABABA" class="mail-title">¿Qué sigue?</p>
+                  <p>Don't share this code with anyone</p>
+                  <p style="color: #BABABA">No compartas el código a nadie</p>
+                  <p style="background-color: #60C300;color: #FFFFFF;width: 60px;margin: 2em auto;padding: 1em;font-weight: bold;">${token}</p>
+                  <p><a style='text-decoration: none;' href="https://app.puntapiedra.com">app.puntapiedra.com</a></p>
+              </div>
+          </div>
+          </body>
+      </html>
+      `,
+      messageType: 'basic'
     }
-    transporter.sendMail(mailOptions, (err,response) => {
-      if(response) return console.log(response)
-      if (err) return console.log(err)
-    })
 
-    User.findOneAndUpdate({email: body.email}, user)
-      .then(response => {
-        res.status(200).json(response)
+    client.send(message)
+      .then(success => {
+        console.log(success)
+        User.findOneAndUpdate({email: body.email}, user)
+          .then(response => res.status(200).json(response))
+          .catch(err => res.status(500).json(err))
+      })
+      .catch(err => {
+        console.log(err)
+        res.status(500).json(err)
       })
   })
   .catch(err => res.status(500).json(err))

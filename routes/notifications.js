@@ -389,7 +389,9 @@ router.post('/send', (req,res) => {
                     client.send(message)
                         .then(success => {
                             console.log(success)
-                            res.status(200).json({message: 'message sent'})
+                            User.findOneAndUpdate({email: user.email}, {$set: {agentNotified: true}})
+                                .then(userNotified => res.status(200).json(userNotified))
+                                .catch(err => res.status(502).json(err))
                         })
                         .catch(err => {
                             console.log(err)

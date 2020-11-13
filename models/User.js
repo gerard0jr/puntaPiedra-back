@@ -52,6 +52,7 @@ let userSchema = new Schema(
         closetCabinet: String,
         floor: String,
         showerTile: String,
+        agentNotified: Boolean,
         creditRequest: {
             type: Object,
             default: {}

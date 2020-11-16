@@ -32,7 +32,6 @@ let userSchema = new Schema(
         language: String,
         country: String,
         state: String,
-        birthDate: Date,
         lotId: Number,
         block: Number, 
         additionalLotId: Number,
@@ -53,6 +52,12 @@ let userSchema = new Schema(
         floor: String,
         showerTile: String,
         agentNotified: Boolean,
+        nationality: String,
+        birthPlace: String,
+        birthDate: String,
+        street: String,
+        houseNumber: String,
+        zip: String,
         creditRequest: {
             type: Object,
             default: {}

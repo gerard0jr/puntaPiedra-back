@@ -164,7 +164,7 @@ router.post('/checkCode', (req,res) => {
     .then(user => {
       if(!user) return res.status(404).json('User not found')
       if(Date.now() > user.resetPasswordExpires || !user.resetPasswordExpires) return res.status(400).json('Token expired or missing')
-      if(parseInt(body.code) === user.resetPasswordToken){
+      if(parseInt(body.token) === user.resetPasswordToken){
         return User.findOneAndUpdate({email: body.email}, {verified: true, resetPasswordToken: undefined, resetPasswordExpires: undefined}, {new: true})
           .then(response => res.status(200).json('Código correcto'))
           .catch(err => res.status(501).json('Error en el servidor'))

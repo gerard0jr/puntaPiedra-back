@@ -47,8 +47,11 @@ let userSchema = new Schema(
         company: String,
         position: String,
         officePhone: String,
-        kitchenCabinet: String,
-        closetCabinet: String,
+        kitchenTopCabinet: String,
+        kitchenBottomCabinet: String,
+        bathroomCabinet: String,
+        kitchenCountertop: String,
+        bathroomCountertop: String,
         floor: String,
         showerTile: String,
         agentNotified: Boolean,
@@ -73,6 +76,10 @@ let userSchema = new Schema(
         clients: [{
             type: Schema.Types.ObjectId,
             ref: 'User'
+        }],
+        messages: [{
+            type: Schema.Types.ObjectId,
+            ref: 'Message'
         }],
         allowNewsletter: {
             type: Boolean,

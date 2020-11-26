@@ -8,6 +8,13 @@ const injectionApiKey = process.env.SOCKET_KEY
 
 let jwt = require('jsonwebtoken')
 
+router.post('/checkEmail', (req, res) => {
+  let { email } = req.body
+  User.findOne({email})
+    .then(user => user ? res.status(200).json({message: 'Email found'}) : res.status(404).json({message: 'Email not found'}))
+    .catch(err => res.status(404).json({message: 'Email not found'}))
+})
+
 router.post('/signup', (req,res,next) => {
   User.register(req.body, req.body.password)
     .then(user => {

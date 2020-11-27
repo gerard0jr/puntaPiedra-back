@@ -81,17 +81,17 @@ router.post('/getData', (req,res,next) => {
             let { id } = decoded
             User.findById(id)
                 .then(user => {
-                    let {
-                        active, 
-                        verified, 
-                        allowNewsletter, 
-                        createdAt, 
-                        updatedAt, 
-                        resetPasswordExpires, 
-                        resetPasswordToken,
-                        ...filteredUser
-                    } = user 
-                    res.status(200).json(filteredUser._doc)
+                    // let {
+                    //     active, 
+                    //     verified, 
+                    //     allowNewsletter, 
+                    //     createdAt, 
+                    //     updatedAt, 
+                    //     resetPasswordExpires, 
+                    //     resetPasswordToken,
+                    //     ...filteredUser
+                    // } = user 
+                    res.status(200).json(user)
                 })
                 .catch(err => res.status(500).json(err))
         })
